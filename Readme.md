@@ -11,6 +11,7 @@ Welcome to the AI Agents Course repository! This comprehensive guide covers the 
 ### Architecture Patterns
 - **[Agent Loops](docs/architecture/agent-loops.md)** - The core pattern for autonomous AI agents
 - **[ReAct Pattern](docs/architecture/react-pattern.md)** - Deep dive into Thought → Action → Observation
+- **[RAG Pattern](docs/architecture/rag-pattern.md)** - Retrieval-Augmented Generation and RAG Ultrathink for grounded responses
 - **[Completion vs Reasoning Models](docs/architecture/completion-vs-reasoning-models.md)** - Choosing the right model for your use case
 
 ### Implementation Details
@@ -60,7 +61,10 @@ Transform stateless AI models into autonomous agents through iterative reasoning
 ### 2. Memory Management
 Implement episodic and semantic memory to overcome AI's stateless nature.
 
-### 3. Model Selection
+### 3. RAG (Retrieval-Augmented Generation)
+Ground AI responses in factual information by retrieving relevant context from knowledge bases before generation.
+
+### 4. Model Selection
 Choose between fast completion models and powerful reasoning models based on your requirements.
 
 ## 📖 Documentation Structure
@@ -73,6 +77,7 @@ docs/
 ├── architecture/       # Design patterns and architectures
 │   ├── agent-loops.md
 │   ├── react-pattern.md
+│   ├── rag-pattern.md
 │   └── completion-vs-reasoning-models.md
 └── implementation/     # Practical implementation guides
     ├── memory-systems.md
@@ -91,8 +96,8 @@ docs/
 
 - **Language**: C# (.NET 6.0+)
 - **AI Models**: OpenAI GPT, Azure OpenAI, Claude
-- **Patterns**: Agent Loops, ReAct, Memory Systems
-- **Tools**: Dependency Injection, Async/Await, LINQ
+- **Patterns**: Agent Loops, ReAct, RAG, Memory Systems
+- **Tools**: Dependency Injection, Async/Await, LINQ, Vector Databases
 
 ## 📝 Code Examples
 
@@ -111,6 +116,7 @@ After studying this repository, you will understand:
 - Different memory strategies for AI systems
 - When to use completion vs reasoning models
 - How to implement the ReAct pattern
+- How to build RAG systems and use RAG Ultrathink for deep reasoning
 - Effective summarization techniques
 
 ## 🔗 Quick Links
@@ -118,6 +124,7 @@ After studying this repository, you will understand:
 - [Agent Loop Examples](docs/architecture/agent-loops.md#c-implementation-examples)
 - [Memory System Implementation](docs/implementation/memory-systems.md)
 - [ReAct Pattern in C#](docs/architecture/react-pattern.md#c-implementation)
+- [RAG and RAG Ultrathink](docs/architecture/rag-pattern.md#rag-ultrathink-advanced-reasoning-patterns)
 - [Model Selection Guide](docs/architecture/completion-vs-reasoning-models.md#when-to-use-each-type)
 
 ## 🤝 Contributing
