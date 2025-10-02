@@ -24,6 +24,61 @@ Welcome to the AI Agents Course repository! This comprehensive guide covers the 
 - .NET 10.0
 - Visual Studio 2022 or VS Code
 - Basic understanding of C# and async programming
+- API Keys: OpenAI, Claude (Anthropic), Gemini (for running examples)
+
+### Running the Projects
+
+Each project demonstrates different AI agent patterns and implementations:
+
+#### **BasicOpenAiExamples** - Simple Chat Loop
+Basic chat implementation using OpenAI SDK directly.
+```bash
+cd BasicOpenAiExamples
+dotnet run
+```
+
+#### **ConsoleAgent** - CLI Agent with Tools
+Multi-provider CLI agent with weather, wardrobe, and email tools. Supports OpenAI, Claude, and Gemini.
+```bash
+cd ConsoleAgent
+dotnet run --provider openai --model gpt-4.1-mini
+dotnet run --provider claude --model claude-3-5-haiku-latest
+dotnet run --provider gemini --model gemini-2.0-flash-lite
+```
+[📖 Full documentation](ConsoleAgent/README.md)
+
+#### **InvoiceAgentApi** - Web API Agent
+Web API agent for invoice management with documentation reading capabilities.
+```bash
+cd InvoiceAgentApi
+dotnet run --provider openai --model gpt-5-mini
+# Runs on http://localhost:5001
+```
+[📖 Full documentation](InvoiceAgentApi/README.md)
+
+#### **McpServer** - Model Context Protocol Server
+Streamable HTTP server implementing MCP (Model Context Protocol) with Tools, Prompts, and Resources.
+```bash
+cd McpServer
+dotnet run
+# Runs on http://localhost:5050
+# Test with: npx @modelcontextprotocol/inspector
+```
+[📖 Full documentation](McpServer/README.md) | [📖 MCP Details](#-model-context-protocol-mcp)
+
+#### **RawJsonImplementation** - Low-Level OpenAI
+Low-level HTTP/JSON implementation for understanding OpenAI API internals.
+```bash
+cd RawJsonImplementation
+dotnet run
+```
+
+#### **InvoiceApp** - Web UI
+Razor Pages web application (companion to InvoiceAgentApi).
+```bash
+cd InvoiceApp
+dotnet run
+```
 
 ### Basic Agent Implementation
 
@@ -120,13 +175,67 @@ After studying this repository, you will understand:
 - How to build RAG systems and use RAG Ultrathink for deep reasoning
 - Effective summarization techniques
 
+## 🔌 Model Context Protocol (MCP)
+
+The **McpServer** project demonstrates Anthropic's Model Context Protocol - a standardized way to connect AI to external tools, data sources, and services.
+
+### What is MCP?
+
+MCP provides three core primitives for AI integration:
+- **Tools**: Functions the AI can call to perform actions (e.g., list invoices, create invoice, mark as paid)
+- **Prompts**: Predefined user prompts for common workflows (e.g., "pay invoice")
+- **Resources**: Files and documentation the AI can access (e.g., getting-started.md)
+
+### Transport Types
+
+#### STDIO Transport
+- **Use case**: Local development with Claude Desktop
+- **Communication**: Subprocess via stdin/stdout
+- **Security**: No encryption needed (same machine)
+
+#### Stream HTTP Transport (Used in McpServer)
+- **Use case**: Remote access, web integration, Claude.ai
+- **Communication**: HTTP POST/GET with optional SSE (Server-Sent Events)
+- **Security**: Supports HTTPS/TLS for remote connections
+- **Port**: `http://localhost:5050`
+
+### Quick Start
+
+```bash
+# Run the MCP server
+cd McpServer
+dotnet run
+
+# Test with MCP Inspector (in another terminal)
+npx @modelcontextprotocol/inspector
+```
+
+### Integration
+
+**For Claude.ai Web** (requires HTTPS):
+```bash
+# Tunnel localhost to public HTTPS URL
+ssh -R 80:localhost:5050 -o StrictHostKeyChecking=no nokey@localhost.run
+```
+
+Then connect via Claude.ai Settings → Connectors (requires Pro/Team/Enterprise plan).
+
+[📖 Full MCP Documentation](McpServer/README.md) | [📖 MCP in CLAUDE.md](CLAUDE.md#model-context-protocol-mcp)
+
 ## 🔗 Quick Links
 
+### Documentation
 - [Agent Loop Examples](docs/architecture/agent-loops.md#c-implementation-examples)
 - [Memory System Implementation](docs/implementation/memory-systems.md)
 - [ReAct Pattern in C#](docs/architecture/react-pattern.md#c-implementation)
 - [RAG and RAG Ultrathink](docs/architecture/rag-pattern.md#rag-ultrathink-advanced-reasoning-patterns)
 - [Model Selection Guide](docs/architecture/completion-vs-reasoning-models.md#when-to-use-each-type)
+
+### Projects
+- [ConsoleAgent README](ConsoleAgent/README.md)
+- [InvoiceAgentApi README](InvoiceAgentApi/README.md)
+- [McpServer README](McpServer/README.md)
+- [RawJsonImplementation README](RawJsonImplementation/README.md)
 
 ## 🤝 Contributing
 
