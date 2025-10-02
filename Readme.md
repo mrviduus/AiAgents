@@ -21,7 +21,7 @@ Welcome to the AI Agents Course repository! This comprehensive guide covers the 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- .NET 6.0 or later
+- .NET 10.0
 - Visual Studio 2022 or VS Code
 - Basic understanding of C# and async programming
 
@@ -94,10 +94,11 @@ docs/
 
 ## 🛠️ Technology Stack
 
-- **Language**: C# (.NET 6.0+)
-- **AI Models**: OpenAI GPT, Azure OpenAI, Claude
-- **Patterns**: Agent Loops, ReAct, RAG, Memory Systems
+- **Language**: C# (.NET 10.0)
+- **AI Models**: OpenAI GPT, Azure OpenAI, Claude, Google Gemini
+- **Patterns**: Agent Loops, ReAct, RAG, Memory Systems, MCP
 - **Tools**: Dependency Injection, Async/Await, LINQ, Vector Databases
+- **Frameworks**: Microsoft.Extensions.AI, Model Context Protocol (MCP)
 
 ## 📝 Code Examples
 
