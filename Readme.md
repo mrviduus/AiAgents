@@ -1,6 +1,6 @@
-# AI Agents Course - C# Implementation
+# AI Agents Course - Learn by Building
 
-Welcome to the AI Agents Course repository! This comprehensive guide covers the fundamental concepts and practical implementations of AI agents using C#.
+Learn how to build AI agents in C# through practical examples. This repository contains 6 working projects that demonstrate different AI agent patterns, from simple chatbots to advanced MCP servers.
 
 ## 📚 Table of Contents
 
@@ -18,109 +18,102 @@ Welcome to the AI Agents Course repository! This comprehensive guide covers the 
 - **[Memory Systems](docs/implementation/memory-systems.md)** - Episodic and semantic memory for AI agents
 - **[Summarization Strategies](docs/implementation/summarization-strategies.md)** - Managing context and token limits
 
-## 🚀 Quick Start
+## 🚀 Getting Started in 5 Minutes
 
-### Prerequisites
-- .NET 10.0
-- Visual Studio 2022 or VS Code
-- Basic understanding of C# and async programming
-- API Keys: OpenAI, Claude (Anthropic), Gemini (for running examples)
+### What You Need
+1. **.NET 10.0** - [Download here](https://dotnet.microsoft.com/download)
+2. **Code Editor** - Visual Studio 2022 or VS Code
+3. **API Keys** - Get at least one:
+   - OpenAI: https://platform.openai.com/api-keys
+   - Claude: https://console.anthropic.com/
+   - Gemini: https://makersuite.google.com/app/apikey
 
-### Running the Projects
-
-Each project demonstrates different AI agent patterns and implementations:
-
-#### **BasicOpenAiExamples** - Simple Chat Loop
-Basic chat implementation using OpenAI SDK directly.
+### First-Time Setup
+1. Clone this repository
+2. Create a `.env` file in the project folder you want to run:
 ```bash
-cd BasicOpenAiExamples
-dotnet run
+OPENAI_API_KEY=your-key-here
+CLAUDE_API_KEY=your-key-here
+GEMINI_API_KEY=your-key-here
 ```
 
-#### **ConsoleAgent** - CLI Agent with Tools
-Multi-provider CLI agent with weather, wardrobe, and email tools. Supports OpenAI, Claude, and Gemini.
+## 📦 The 6 Projects - From Simple to Advanced
+
+### 1️⃣ **BasicOpenAiExamples** - Start Here!
+Your first AI chatbot in 5 lines of code.
+```bash
+cd BasicOpenAiExamples
+echo "OPENAI_API_KEY=your-key" > .env
+dotnet run
+# Chat with AI directly!
+```
+
+### 2️⃣ **ConsoleAgent** - AI with Superpowers
+An AI agent that can check weather, manage wardrobe, and send emails.
 ```bash
 cd ConsoleAgent
+# Pick your AI provider:
 dotnet run --provider openai --model gpt-4.1-mini
 dotnet run --provider claude --model claude-3-5-haiku-latest
 dotnet run --provider gemini --model gemini-2.0-flash-lite
 ```
-[📖 Full documentation](ConsoleAgent/README.md)
+Try: "What should I wear today in New York?"
 
-#### **InvoiceAgentApi** - Web API Agent
-Web API agent for invoice management with documentation reading capabilities.
+### 3️⃣ **InvoiceAgentApi** - Business AI Assistant
+AI that manages invoices and reads documentation.
 ```bash
 cd InvoiceAgentApi
 dotnet run --provider openai --model gpt-5-mini
-# Runs on http://localhost:5001
+# API runs at http://localhost:5001
 ```
-[📖 Full documentation](InvoiceAgentApi/README.md)
+Pair with InvoiceApp for full experience.
 
-#### **McpServer** - Model Context Protocol Server
-Streamable HTTP server implementing MCP (Model Context Protocol) with Tools, Prompts, and Resources.
-```bash
-cd McpServer
-dotnet run
-# Runs on http://localhost:5050
-# Test with: npx @modelcontextprotocol/inspector
-```
-[📖 Full documentation](McpServer/README.md) | [📖 MCP Details](#-model-context-protocol-mcp)
-
-#### **RawJsonImplementation** - Low-Level OpenAI
-Low-level HTTP/JSON implementation for understanding OpenAI API internals.
-```bash
-cd RawJsonImplementation
-dotnet run
-```
-
-#### **InvoiceApp** - Web UI
-Razor Pages web application (companion to InvoiceAgentApi).
+### 4️⃣ **InvoiceApp** - Web Interface
+Beautiful web UI for the Invoice AI.
 ```bash
 cd InvoiceApp
 dotnet run
+# Open http://localhost:5000 in browser
 ```
 
-### Basic Agent Implementation
+### 5️⃣ **McpServer** - Connect AI to Everything
+Advanced server using Anthropic's MCP protocol.
+```bash
+cd McpServer
+dotnet run
+# Server at http://localhost:5050
 
-```csharp
-public class SimpleAgent
-{
-    private readonly ILanguageModel _llm;
-    private readonly Dictionary<string, ITool> _tools;
+# Test it:
+npx @modelcontextprotocol/inspector
+```
+[Learn about MCP](#what-is-mcp)
 
-    public SimpleAgent(ILanguageModel llm)
-    {
-        _llm = llm;
-        _tools = new Dictionary<string, ITool>();
-    }
-
-    public async Task<string> ProcessAsync(string task)
-    {
-        // Think
-        var action = await _llm.DecideActionAsync(task);
-
-        // Act
-        var result = await _tools[action.Tool].ExecuteAsync(action.Parameters);
-
-        // Observe and respond
-        return await _llm.GenerateResponseAsync(result);
-    }
-}
+### 6️⃣ **RawJsonImplementation** - Under the Hood
+See how AI APIs work at the lowest level.
+```bash
+cd RawJsonImplementation
+dotnet run
+# Learn by reading the code!
 ```
 
-## 🏗️ Key Concepts
+## 💡 What You'll Learn
 
-### 1. Agent Loop Pattern
-Transform stateless AI models into autonomous agents through iterative reasoning and action cycles.
+### The Big Ideas (With Examples!)
 
-### 2. Memory Management
-Implement episodic and semantic memory to overcome AI's stateless nature.
+**🤖 AI Agents** - AI that can use tools and take actions
+- Example: ConsoleAgent checks weather and suggests clothes
 
-### 3. RAG (Retrieval-Augmented Generation)
-Ground AI responses in factual information by retrieving relevant context from knowledge bases before generation.
+**🧠 Memory Systems** - Give AI memory between conversations
+- Example: Agent remembers your preferences
 
-### 4. Model Selection
-Choose between fast completion models and powerful reasoning models based on your requirements.
+**🔄 Agent Loops** - Think → Act → Observe → Repeat
+- Example: AI tries multiple approaches to solve problems
+
+**📚 RAG Pattern** - AI that reads documents before answering
+- Example: InvoiceAgentApi reads docs to answer questions
+
+**🔌 MCP Protocol** - Connect AI to any service
+- Example: McpServer exposes tools, prompts, and resources
 
 ## 📖 Documentation Structure
 
@@ -175,52 +168,46 @@ After studying this repository, you will understand:
 - How to build RAG systems and use RAG Ultrathink for deep reasoning
 - Effective summarization techniques
 
-## 🔌 Model Context Protocol (MCP)
+## 🔌 What is MCP?
 
-The **McpServer** project demonstrates Anthropic's Model Context Protocol - a standardized way to connect AI to external tools, data sources, and services.
+**Model Context Protocol (MCP)** is Anthropic's way to connect AI to your tools and data.
 
-### What is MCP?
+Think of it like this:
+- **Without MCP**: AI can only chat
+- **With MCP**: AI can use your tools, read your docs, and take actions
 
-MCP provides three core primitives for AI integration:
-- **Tools**: Functions the AI can call to perform actions (e.g., list invoices, create invoice, mark as paid)
-- **Prompts**: Predefined user prompts for common workflows (e.g., "pay invoice")
-- **Resources**: Files and documentation the AI can access (e.g., getting-started.md)
+### MCP Gives AI Three Superpowers:
 
-### Transport Types
+1. **🔧 Tools** - Functions AI can call
+   - Example: "List all invoices", "Mark invoice #123 as paid"
 
-#### STDIO Transport
-- **Use case**: Local development with Claude Desktop
-- **Communication**: Subprocess via stdin/stdout
-- **Security**: No encryption needed (same machine)
+2. **💬 Prompts** - Ready-made templates
+   - Example: "Pay invoice for [customer name]"
 
-#### Stream HTTP Transport (Used in McpServer)
-- **Use case**: Remote access, web integration, Claude.ai
-- **Communication**: HTTP POST/GET with optional SSE (Server-Sent Events)
-- **Security**: Supports HTTPS/TLS for remote connections
-- **Port**: `http://localhost:5050`
+3. **📄 Resources** - Documents AI can read
+   - Example: Your product documentation, FAQs
 
-### Quick Start
+### Try It Yourself:
 
 ```bash
-# Run the MCP server
+# 1. Start the MCP server
 cd McpServer
 dotnet run
 
-# Test with MCP Inspector (in another terminal)
+# 2. Test with the inspector (new terminal)
 npx @modelcontextprotocol/inspector
+# Opens a web UI to test your tools!
 ```
 
-### Integration
+### Connect to Claude.ai (Advanced):
 
-**For Claude.ai Web** (requires HTTPS):
+Need HTTPS? Use this tunnel:
 ```bash
-# Tunnel localhost to public HTTPS URL
-ssh -R 80:localhost:5050 -o StrictHostKeyChecking=no nokey@localhost.run
+ssh -R 80:localhost:5050 nokey@localhost.run
+# Gives you: https://abc123.localhost.run
 ```
 
-Then connect via Claude.ai Settings → Connectors (requires Pro/Team/Enterprise plan).
-
-[📖 Full MCP Documentation](McpServer/README.md) | [📖 MCP in CLAUDE.md](CLAUDE.md#model-context-protocol-mcp)
+Then add to Claude.ai → Settings → Connectors
 
 ## 🔗 Quick Links
 
@@ -236,6 +223,32 @@ Then connect via Claude.ai Settings → Connectors (requires Pro/Team/Enterprise
 - [InvoiceAgentApi README](InvoiceAgentApi/README.md)
 - [McpServer README](McpServer/README.md)
 - [RawJsonImplementation README](RawJsonImplementation/README.md)
+
+## ❓ Troubleshooting
+
+### Common Issues & Solutions
+
+**"API key not found"**
+- Create `.env` file in the project folder (not root)
+- Format: `OPENAI_API_KEY=sk-...` (no quotes)
+
+**"Model not found"**
+- OpenAI: Use `gpt-4.1-mini` or `gpt-3.5-turbo`
+- Claude: Use `claude-3-5-haiku-latest`
+- Gemini: Use `gemini-2.0-flash-lite`
+
+**"Port already in use"**
+- InvoiceApp: Default port 5000
+- InvoiceAgentApi: Default port 5001
+- McpServer: Default port 5050
+- Kill existing process or change port
+
+**"dotnet: command not found"**
+- Install .NET 10.0: https://dotnet.microsoft.com/download
+
+**MCP Inspector not working**
+- Install Node.js first: https://nodejs.org
+- Run in separate terminal from MCP server
 
 ## 🤝 Contributing
 
