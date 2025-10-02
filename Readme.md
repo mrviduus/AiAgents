@@ -29,6 +29,25 @@ Learn how to build AI agents in C# through practical examples. This repository c
    - Gemini: https://makersuite.google.com/app/apikey
 
 ### First-Time Setup
+
+#### Option 1: Docker (Easiest!)
+```bash
+# 1. Clone this repository
+git clone https://github.com/mrviduus/AiAgents.git
+cd AiAgents
+
+# 2. Copy and edit .env file
+cp .env.example .env
+# Edit .env with your API keys
+
+# 3. Run with Docker Compose
+docker-compose up  # All services
+# OR specific services:
+docker-compose -f docker-compose.invoice.yml up  # Invoice services only
+docker-compose -f docker-compose.mcp.yml up      # MCP services only
+```
+
+#### Option 2: Manual Setup
 1. Clone this repository
 2. Create a `.env` file in the project folder you want to run:
 ```bash
@@ -223,6 +242,59 @@ Then add to Claude.ai → Settings → Connectors
 - [InvoiceAgentApi README](InvoiceAgentApi/README.md)
 - [McpServer README](McpServer/README.md)
 - [RawJsonImplementation README](RawJsonImplementation/README.md)
+
+## 🐳 Docker Support
+
+### Quick Start with Docker
+
+All services are containerized and ready to run:
+
+```bash
+# Run everything (Invoice + MCP services)
+docker-compose up
+
+# Run specific service groups
+docker-compose -f docker-compose.invoice.yml up  # Invoice services
+docker-compose -f docker-compose.mcp.yml up      # MCP + Inspector
+
+# Run with HTTPS tunnel for Claude.ai
+docker-compose --profile tunnel up
+```
+
+### Service URLs
+
+When running with Docker:
+- **InvoiceApp**: http://localhost:5000
+- **InvoiceAgentApi**: http://localhost:5001
+- **McpServer**: http://localhost:5050
+- **MCP Inspector**: http://localhost:6274
+
+### Docker Commands
+
+```bash
+# Build images
+docker-compose build
+
+# Run in background
+docker-compose up -d
+
+# View logs
+docker-compose logs -f [service-name]
+
+# Stop services
+docker-compose down
+
+# Clean up everything
+docker-compose down -v  # Removes volumes too
+```
+
+### Docker Environment Variables
+
+Set in `.env` file (copy from `.env.example`):
+```env
+AI_PROVIDER=openai      # or claude, gemini
+AI_MODEL=gpt-4.1-mini   # your preferred model
+```
 
 ## ❓ Troubleshooting
 

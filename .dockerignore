@@ -1,0 +1,41 @@
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# .NET
+**/bin/
+**/obj/
+**/.vs/
+**/.vscode/
+**/publish/
+**/*.user
+**/*.suo
+**/*.cache
+**/*.log
+
+# Environment
+.env
+.env.local
+.env.*.local
+**/.env
+
+# Docker
+docker-compose*.yml
+Dockerfile*
+.dockerignore
+
+# Documentation
+*.md
+docs/
+
+# IDE
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Node (for MCP Inspector)
+node_modules/
+npm-debug.log
+yarn-error.log

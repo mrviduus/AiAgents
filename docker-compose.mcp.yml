@@ -1,0 +1,79 @@
+version: '3.8'
+
+services:
+  # MCP Server - Model Context Protocol server
+  mcp-server:
+    build:
+      context: ./McpServer
+      dockerfile: Dockerfile
+    container_name: mcp-server
+    ports:
+      - "5050:5050"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5050
+    networks:
+      - mcp-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5050/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+  # MCP Inspector - Web UI for testing MCP servers
+  mcp-inspector:
+    image: node:20-alpine
+    container_name: mcp-inspector
+    working_dir: /app
+    ports:
+      - "6274:6274"
+      - "6277:6277"  # Proxy port
+    environment:
+      # MCP Server connection
+      - MCP_SERVER_URL=http://mcp-server:5050
+      # Inspector settings
+      - PORT=6274
+      - PROXY_PORT=6277
+      # Disable auth for local development
+      - DANGEROUSLY_OMIT_AUTH=true
+    command: >
+      sh -c "
+        npm install -g @modelcontextprotocol/inspector &&
+        echo 'Waiting for MCP Server to start...' &&
+        sleep 10 &&
+        echo 'Starting MCP Inspector...' &&
+        echo 'Open http://localhost:6274 in your browser' &&
+        echo 'MCP Server endpoint: http://mcp-server:5050' &&
+        npx @modelcontextprotocol/inspector
+      "
+    depends_on:
+      - mcp-server
+    networks:
+      - mcp-network
+    restart: unless-stopped
+
+  # Optional: HTTPS tunnel for Claude.ai integration
+  mcp-tunnel:
+    image: alpine:latest
+    container_name: mcp-tunnel
+    profiles: ["tunnel"]  # Only starts when --profile tunnel is used
+    environment:
+      - MCP_PORT=5050
+    command: >
+      sh -c "
+        apk add --no-cache openssh-client &&
+        echo 'Starting localhost.run tunnel for MCP Server...' &&
+        echo 'This will provide a public HTTPS URL for Claude.ai' &&
+        ssh -R 80:mcp-server:5050 -o StrictHostKeyChecking=no nokey@localhost.run
+      "
+    depends_on:
+      - mcp-server
+    networks:
+      - mcp-network
+    restart: unless-stopped
+
+networks:
+  mcp-network:
+    name: mcp_network
+    driver: bridge

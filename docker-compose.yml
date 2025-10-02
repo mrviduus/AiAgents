@@ -1,0 +1,116 @@
+version: '3.8'
+
+# Main docker-compose for all services
+# Use specific files for individual service groups:
+# - docker-compose.invoice.yml for InvoiceApp + InvoiceAgentApi
+# - docker-compose.mcp.yml for McpServer + Inspector
+
+services:
+  # === Invoice Services ===
+  invoice-app:
+    build:
+      context: ./InvoiceApp
+      dockerfile: Dockerfile
+    container_name: invoice-app
+    ports:
+      - "5000:5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5000
+      - ConnectionStrings__DefaultConnection=Data Source=/app/data/invoices.db
+    volumes:
+      - invoice-data:/app/data
+    networks:
+      - ai-agents-network
+    restart: unless-stopped
+
+  invoice-agent-api:
+    build:
+      context: ./InvoiceAgentApi
+      dockerfile: Dockerfile
+    container_name: invoice-agent-api
+    ports:
+      - "5001:5001"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5001
+      - AI_PROVIDER=${AI_PROVIDER:-openai}
+      - AI_MODEL=${AI_MODEL:-gpt-4.1-mini}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - CLAUDE_API_KEY=${CLAUDE_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    env_file:
+      - .env
+    depends_on:
+      - invoice-app
+    networks:
+      - ai-agents-network
+    restart: unless-stopped
+    command: ["dotnet", "InvoiceAgentApi.dll", "--provider", "${AI_PROVIDER:-openai}", "--model", "${AI_MODEL:-gpt-4.1-mini}"]
+
+  # === MCP Services ===
+  mcp-server:
+    build:
+      context: ./McpServer
+      dockerfile: Dockerfile
+    container_name: mcp-server
+    ports:
+      - "5050:5050"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5050
+    networks:
+      - ai-agents-network
+    restart: unless-stopped
+
+  mcp-inspector:
+    image: node:20-alpine
+    container_name: mcp-inspector
+    working_dir: /app
+    ports:
+      - "6274:6274"
+      - "6277:6277"
+    environment:
+      - MCP_SERVER_URL=http://mcp-server:5050
+      - PORT=6274
+      - PROXY_PORT=6277
+      - DANGEROUSLY_OMIT_AUTH=true
+    command: >
+      sh -c "
+        npm install -g @modelcontextprotocol/inspector &&
+        echo 'Waiting for MCP Server...' &&
+        sleep 10 &&
+        echo 'Starting MCP Inspector at http://localhost:6274' &&
+        npx @modelcontextprotocol/inspector
+      "
+    depends_on:
+      - mcp-server
+    networks:
+      - ai-agents-network
+    restart: unless-stopped
+
+  # === Optional Services (use --profile) ===
+  mcp-tunnel:
+    image: alpine:latest
+    container_name: mcp-tunnel
+    profiles: ["tunnel"]
+    command: >
+      sh -c "
+        apk add --no-cache openssh-client &&
+        echo 'Creating HTTPS tunnel for Claude.ai...' &&
+        ssh -R 80:mcp-server:5050 -o StrictHostKeyChecking=no nokey@localhost.run
+      "
+    depends_on:
+      - mcp-server
+    networks:
+      - ai-agents-network
+    restart: unless-stopped
+
+volumes:
+  invoice-data:
+    name: ai_agents_invoice_data
+
+networks:
+  ai-agents-network:
+    name: ai_agents_network
+    driver: bridge

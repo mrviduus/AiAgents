@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  # InvoiceApp - Web UI
+  invoice-app:
+    build:
+      context: ./InvoiceApp
+      dockerfile: Dockerfile
+    container_name: invoice-app
+    ports:
+      - "5000:5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5000
+      - ConnectionStrings__DefaultConnection=Data Source=/app/data/invoices.db
+    volumes:
+      - invoice-data:/app/data
+    networks:
+      - invoice-network
+    restart: unless-stopped
+
+  # InvoiceAgentApi - AI Agent API
+  invoice-agent-api:
+    build:
+      context: ./InvoiceAgentApi
+      dockerfile: Dockerfile
+    container_name: invoice-agent-api
+    ports:
+      - "5001:5001"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5001
+      # AI Provider settings (override with your provider choice)
+      - AI_PROVIDER=${AI_PROVIDER:-openai}
+      - AI_MODEL=${AI_MODEL:-gpt-4.1-mini}
+      # API Keys from .env file
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - CLAUDE_API_KEY=${CLAUDE_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    env_file:
+      - .env
+    depends_on:
+      - invoice-app
+    networks:
+      - invoice-network
+    restart: unless-stopped
+    command: ["dotnet", "InvoiceAgentApi.dll", "--provider", "${AI_PROVIDER:-openai}", "--model", "${AI_MODEL:-gpt-4.1-mini}"]
+
+volumes:
+  invoice-data:
+    name: invoice_data
+
+networks:
+  invoice-network:
+    name: invoice_network
+    driver: bridge
